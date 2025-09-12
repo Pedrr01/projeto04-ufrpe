@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Bem-vindo ao FoodMap! 🍉</h1>
+  {% if user.is_authenticated %}
+    <p style="text-align: center;">Usuário autenticado.</p>
+  {% else %}
+    <p style="text-align: center;">Faça o login ou crie uma conta para continuar.</p>
+  {% endif %}
+{% endblock %}
