@@ -1,0 +1,28 @@
+Arquivos de Cache e Bytecode do Python
+pycache/
+*.pyc
+*.pyo
+*.pyd
+
+Ambientes Virtuais
+venv/
+env/
+.env
+
+Arquivos de banco de dados
+*.sqlite3
+db.sqlite3
+/postgres_data/
+
+Arquivos do S.O.
+.DS_Store
+Thumbs.db
+
+Arquivos do VSCode
+.vscode/
+
+Arquivos de dependências (gerenciados pelo requirements.txt)
+/site-packages/
+
+Logs
+*.log
