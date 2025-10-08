@@ -8,11 +8,17 @@ ENV PYTHONUNBUFFERED 1
 # Definir o diretório de trabalho dentro do contêiner
 WORKDIR /app
 
-# Copiar o arquivo de dependências
+# Copiar o arquivo de dependências e instalar
 COPY requirements.txt .
-
-# Instalar as dependências do projeto
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copiar todo o código do projeto para o diretório de trabalho
+# Copiar o restante do código do projeto
 COPY . .
+
+# Expor porta do Django
+EXPOSE 8000
+
+# Comando padrão (pode ser sobrescrito no docker-compose)
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+
+
