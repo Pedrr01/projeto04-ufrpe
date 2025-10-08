@@ -1,10 +1,55 @@
 {% extends 'base.html' %}
 
 {% block content %}
-  <h1>Bem-vindo ao FoodMap! 🍉</h1>
-  {% if user.is_authenticated %}
-    <p style="text-align: center;">Usuário autenticado.</p>
-  {% else %}
-    <p style="text-align: center;">Faça o login ou crie uma conta para continuar.</p>
-  {% endif %}
+  <div style="text-align: center; margin-top: 40px;">
+    <h1>Bem-vindo ao FoodMap! 🍉</h1>
+
+    {% if user.is_authenticated %}
+      <p>Confira seu plano alimentar:</p>
+      <a href="{% url 'plano_list' %}" 
+         style="
+           display: inline-block; 
+           background-color: #EF5350; 
+           color: white; 
+           padding: 10px 20px; 
+           border-radius: 8px; 
+           text-decoration: none; 
+           font-weight: bold;
+           transition: 0.3s;
+         "
+         onmouseover="this.style.backgroundColor='#e53935'"
+         onmouseout="this.style.backgroundColor='#EF5350'">
+         Plano Alimentar
+      </a>
+
+      <hr style="margin: 40px auto; width: 60%; border: 1px solid #ddd;">
+
+      <h2>Descubra as calorias do seu prato com um click 📸</h2>
+      <form action="#" method="post" enctype="multipart/form-data" style="margin-top: 20px;">
+        {% csrf_token %}
+        <input type="file" name="foto_prato" accept="image/*" 
+               style="padding: 8px; border: 1px solid #ccc; border-radius: 6px; margin-right: 10px;">
+        <button type="submit"
+                style="
+                  background-color: #4CAF50;
+                  color: white;
+                  padding: 8px 18px;
+                  border: none;
+                  border-radius: 8px;
+                  font-weight: bold;
+                  cursor: pointer;
+                  transition: 0.3s;
+                "
+                onmouseover="this.style.backgroundColor='#43A047'"
+                onmouseout="this.style.backgroundColor='#4CAF50'">
+          Enviar Foto
+        </button>
+      </form>
+
+      <p style="margin-top: 15px; color: #777;">Nos envie uma foto e veja as calorias do seu prato!</p>
+
+    {% else %}
+      <p>Faça o login ou crie uma conta para continuar.</p>
+    {% endif %}
+  </div>
 {% endblock %}

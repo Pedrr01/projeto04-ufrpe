@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Plano Alimentar da Semana</h2>
+
+<div style="display: flex; justify-content: center; margin-bottom: 1.5em;">
+    <a href="{% url 'plano_create' %}">
+        <button>Adicionar Refeição</button>
+    </a>
+</div>
+
+<table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.95em;">
+    <thead>
+        <tr style="background-color: var(--primary-color); color: white;">
+            <th style="padding: 0.8em;">Dia</th>
+            <th style="padding: 0.8em;">Café da Manhã</th>
+            <th style="padding: 0.8em;">Almoço</th>
+            <th style="padding: 0.8em;">Jantar</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for dia, refeicoes in estrutura.items %}
+        <tr {% cycle 'style="background-color:#ffffff;"' 'style="background-color:#f9f9f9;"' %}>
+            <td style="padding: 0.8em; font-weight: 600;">{{ dia|capfirst }}</td>
+            <td style="padding: 0.8em;">{{ refeicoes.cafe.descricao|default:"-" }}</td>
+            <td style="padding: 0.8em;">{{ refeicoes.almoco.descricao|default:"-" }}</td>
+            <td style="padding: 0.8em;">{{ refeicoes.jantar.descricao|default:"-" }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+{% if not estrutura %}
+<p style="text-align: center; color: #888; margin-top: 2em;">Nenhum plano alimentar cadastrado ainda.</p>
+{% endif %}
+{% endblock %}

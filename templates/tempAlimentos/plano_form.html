@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Adicionar Refeição</h2>
+
+<form method="post">
+    {% csrf_token %}
+    <p>
+        <label for="{{ form.dia_semana.id_for_label }}">Dia da Semana:</label>
+        {{ form.dia_semana }}
+    </p>
+
+    <p>
+        <label for="{{ form.tipo_refeicao.id_for_label }}">Tipo de Refeição:</label>
+        {{ form.tipo_refeicao }}
+    </p>
+
+    <p>
+        <label for="{{ form.descricao.id_for_label }}">Descrição:</label>
+        {{ form.descricao }}
+    </p>
+
+    <button type="submit">Salvar Refeição</button>
+    <a href="{% url 'plano_list' %}" style="text-decoration: none;">
+        <button type="button" style="background-color: var(--border-color); color: var(--text-color); margin-left: 0.5em;">
+            Voltar
+        </button>
+    </a>
+</form>
+{% endblock %}
