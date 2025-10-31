@@ -20,6 +20,7 @@ class PlanoAlimentar(models.Model):
     dia_semana = models.CharField(max_length=10, choices=DIAS_DA_SEMANA)
     tipo_refeicao = models.CharField(max_length=10, choices=TIPOS_REFEICAO)
     descricao = models.TextField(verbose_name="Alimentos ou Refeição")
+    concluido = models.BooleanField(default=False)  
 
     class Meta:
         unique_together = ('usuario', 'dia_semana', 'tipo_refeicao')

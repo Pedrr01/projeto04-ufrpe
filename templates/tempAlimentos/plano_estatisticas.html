@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Estatísticas do Plano Alimentar</h2>
+
+<p>Total de refeições: {{ total_refeicoes }}</p>
+<p>Total de refeições concluídas: {{ total_concluidas }}</p>
+
+<a href="{% url 'plano_list' %}">
+    <button>Voltar</button>
+</a>
+{% endblock %}

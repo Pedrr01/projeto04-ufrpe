@@ -76,15 +76,26 @@ WSGI_APPLICATION = 'config.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/4.2/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'foodMap',
+#         'USER': 'postgres',
+#         'PASSWORD': '123123',
+#         'HOST': '26.3.73.152',
+#     }
+# }
+
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'foodMap',
+        'NAME': 'postgres',
         'USER': 'postgres',
-        'PASSWORD': '123123',
-        'HOST': '26.3.73.152',
+        'PASSWORD': 'Foodmap123!',
+        'HOST': 'foodmap.cl4uqq66wqnb.us-east-2.rds.amazonaws.com',
     }
 }
+
 
 
 # Password validation

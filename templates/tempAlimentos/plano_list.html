@@ -1,36 +1,260 @@
-{% extends 'base.html' %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>FoodMap 🍉</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
 
-{% block content %}
-<h2>Plano Alimentar da Semana</h2>
+    <style>
+        :root {
+            --primary-color: #EF5350;
+            --primary-hover-color: #d32f2f;
+            --background-color: #f4f4f9;
+            --card-background: #ffffff;
+            --text-color: #333;
+            --border-color: #ddd;
+            --active-color: #45a049;
+        }
 
-<div style="display: flex; justify-content: center; margin-bottom: 1.5em;">
-    <a href="{% url 'plano_create' %}">
-        <button>Adicionar Refeição</button>
-    </a>
-</div>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 2em;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+        }
 
-<table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.95em;">
-    <thead>
-        <tr style="background-color: var(--primary-color); color: white;">
-            <th style="padding: 0.8em;">Dia</th>
-            <th style="padding: 0.8em;">Café da Manhã</th>
-            <th style="padding: 0.8em;">Almoço</th>
-            <th style="padding: 0.8em;">Jantar</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for dia, refeicoes in estrutura.items %}
-        <tr {% cycle 'style="background-color:#ffffff;"' 'style="background-color:#f9f9f9;"' %}>
-            <td style="padding: 0.8em; font-weight: 600;">{{ dia|capfirst }}</td>
-            <td style="padding: 0.8em;">{{ refeicoes.cafe.descricao|default:"-" }}</td>
-            <td style="padding: 0.8em;">{{ refeicoes.almoco.descricao|default:"-" }}</td>
-            <td style="padding: 0.8em;">{{ refeicoes.jantar.descricao|default:"-" }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+        /* Caixa do usuário */
+        .user-status {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            display: flex;
+            align-items: center;
+            background-color: var(--card-background);
+            padding: 0.5em 1em;
+            border-radius: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.15);
+            z-index: 1000;
+            font-weight: 600;
+        }
+        .status-dot {
+            width: 10px;
+            height: 10px;
+            background-color: var(--active-color);
+            border-radius: 50%;
+            margin-right: 0.75em;
+        }
 
-{% if not estrutura %}
-<p style="text-align: center; color: #888; margin-top: 2em;">Nenhum plano alimentar cadastrado ainda.</p>
-{% endif %}
-{% endblock %}
+        .main-container {
+            width: 100%;
+            max-width: 1100px;
+        }
+
+        nav {
+            background-color: var(--card-background);
+            padding: 1em 2em;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2em;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+        nav a {
+            text-decoration: none;
+            color: var(--primary-color);
+            font-weight: 600;
+            padding: 0.5em 1em;
+            border-radius: 5px;
+            transition: background-color 0.3s, color 0.3s;
+            margin: 0.2em;
+        }
+        nav a:hover {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        /* Estilo do conteúdo principal */
+        main.card {
+            background-color: var(--card-background);
+            padding: 2em;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            color: var(--text-color);
+            text-align: center;
+            margin-top: 0;
+        }
+
+        /* Estilo da tabela */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 1em;
+            background-color: #fff;
+            box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
+        }
+        th, td {
+            padding: 1em;
+            text-align: center;
+            vertical-align: middle;
+            border: 1px solid #ddd;
+        }
+        thead th {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: bold;
+        }
+        tbody tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        tbody tr:nth-child(odd) {
+            background-color: #ffffff;
+        }
+        .checkbox-cell form {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5em;
+            margin: 0;
+        }
+        .checkbox-cell input[type="checkbox"] {
+            transform: scale(1.2);
+        }
+
+        /* Botões principais */
+        .top-buttons {
+            margin-bottom: 1.5em;
+            text-align: center;
+        }
+        .top-buttons button {
+            padding: 0.8em 1.2em;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background-color 0.3s;
+            margin: 0 0.5em;
+        }
+        .top-buttons button:hover {
+            background-color: var(--primary-hover-color);
+        }
+
+        p.empty {
+            text-align: center;
+            color: #888;
+            margin-top: 2em;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body>
+    {% if user.is_authenticated %}
+    <div class="user-status">
+        <span class="status-dot"></span>
+        <span>Olá, {{ user.username }}!</span>
+    </div>
+    {% endif %}
+
+    <div class="main-container">
+        <nav>
+            <div>
+                <a href="{% url 'home' %}">Início</a>
+            </div>
+            <div>
+                {% if user.is_authenticated %}
+                    <a href="{% url 'logout' %}">Sair</a>
+                {% else %}
+                    <a href="{% url 'login' %}">Entrar</a>
+                    <a href="{% url 'signup' %}">Cadastrar</a>
+                {% endif %}
+            </div>
+        </nav>
+
+        <main class="card">
+            <h2>Plano Alimentar da Semana</h2>
+
+            <div class="top-buttons">
+                <a href="{% url 'plano_create' %}"><button>Adicionar Refeição</button></a>
+                <a href="{% url 'plano_estatisticas' %}"><button>Estatísticas</button></a>
+            </div>
+
+            <table>
+                <thead>
+                    <tr>
+                        <th>Dia da Semana</th>
+                        <th>Café da Manhã</th>
+                        <th>Almoço</th>
+                        <th>Jantar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for dia, refeicoes in estrutura.items %}
+                    <tr>
+                        <td style="font-weight: bold;">{{ dia|capfirst }}</td>
+
+                        <!-- Café -->
+                        <td class="checkbox-cell">
+                            {% if refeicoes.cafe %}
+                                <form method="post" action="{% url 'plano_toggle' refeicoes.cafe.id %}">
+                                    {% csrf_token %}
+                                    <input type="checkbox" name="concluido" onchange="this.form.submit()" 
+                                           {% if refeicoes.cafe.concluido %}checked{% endif %}>
+                                    <label>{{ refeicoes.cafe.descricao }}</label>
+                                </form>
+                            {% else %}
+                                <form><input type="checkbox" disabled> <label>-</label></form>
+                            {% endif %}
+                        </td>
+
+                        <!-- Almoço -->
+                        <td class="checkbox-cell">
+                            {% if refeicoes.almoco %}
+                                <form method="post" action="{% url 'plano_toggle' refeicoes.almoco.id %}">
+                                    {% csrf_token %}
+                                    <input type="checkbox" name="concluido" onchange="this.form.submit()" 
+                                           {% if refeicoes.almoco.concluido %}checked{% endif %}>
+                                    <label>{{ refeicoes.almoco.descricao }}</label>
+                                </form>
+                            {% else %}
+                                <form><input type="checkbox" disabled> <label>-</label></form>
+                            {% endif %}
+                        </td>
+
+                        <!-- Jantar -->
+                        <td class="checkbox-cell">
+                            {% if refeicoes.jantar %}
+                                <form method="post" action="{% url 'plano_toggle' refeicoes.jantar.id %}">
+                                    {% csrf_token %}
+                                    <input type="checkbox" name="concluido" onchange="this.form.submit()" 
+                                           {% if refeicoes.jantar.concluido %}checked{% endif %}>
+                                    <label>{{ refeicoes.jantar.descricao }}</label>
+                                </form>
+                            {% else %}
+                                <form><input type="checkbox" disabled> <label>-</label></form>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            {% if not estrutura %}
+                <p class="empty">Nenhum plano alimentar cadastrado ainda.</p>
+            {% endif %}
+        </main>
+    </div>
+</body>
+</html>
