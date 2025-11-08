@@ -1,12 +1,155 @@
-{% extends 'base.html' %}
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FoodMap - Estatísticas 🥗</title>
 
-{% block content %}
-<h2>Estatísticas do Plano Alimentar</h2>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f5f6fa;
+            color: #2d3436;
+            margin: 0;
+            padding: 0;
+        }
 
-<p>Total de refeições: {{ total_refeicoes }}</p>
-<p>Total de refeições concluídas: {{ total_concluidas }}</p>
+        header {
+            background-color: #27ae60;
+            color: white;
+            padding: 20px;
+            text-align: center;
+            font-size: 1.8em;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
 
-<a href="{% url 'plano_list' %}">
-    <button>Voltar</button>
-</a>
-{% endblock %}
+        main {
+            max-width: 900px;
+            margin: 40px auto;
+            background-color: #fff;
+            padding: 40px;
+            border-radius: 16px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 25px;
+            color: #2d3436;
+        }
+
+        .card-unico {
+            background-color: #ecf0f1;
+            border-radius: 12px;
+            box-shadow: 0 3px 6px rgba(0,0,0,0.1);
+            padding: 20px 25px;
+            margin: 0 auto 35px;
+            max-width: 500px;
+            text-align: left;
+            transition: 0.3s ease;
+        }
+
+        .card-unico:hover {
+            transform: translateY(-3px);
+            background-color: #e2e8e9;
+        }
+
+        .info-linha {
+            display: flex;
+            justify-content: space-between;
+            border-bottom: 1px solid #dcdde1;
+            padding: 6px 0;
+        }
+
+        .info-linha:last-child {
+            border-bottom: none;
+        }
+
+        .info-linha span:first-child {
+            font-weight: bold;
+            color: #27ae60;
+        }
+
+        .info-linha span:last-child {
+            font-weight: 600;
+        }
+
+        .grafico {
+            margin-top: 30px;
+            border-top: 2px solid #ecf0f1;
+            padding-top: 25px;
+        }
+
+        .btn-voltar {
+            display: block;
+            width: 200px;
+            margin: 35px auto 10px;
+            background-color: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 10px;
+            padding: 12px 0;
+            font-size: 1em;
+            cursor: pointer;
+            transition: 0.3s;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .btn-voltar:hover {
+            background-color: #219150;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px 0;
+            font-size: 0.9em;
+            color: #636e72;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        FoodMap 🥗
+    </header>
+
+    <main>
+        <h2>Resumo do Plano Alimentar</h2>
+
+        <div class="card-unico">
+            <div class="info-linha">
+                <span>Total de Refeições:</span>
+                <span>{{ total_refeicoes }}</span>
+            </div>
+            <div class="info-linha">
+                <span>Concluídas:</span>
+                <span>{{ total_concluidas }}</span>
+            </div>
+            <div class="info-linha">
+                <span>Meta Semanal:</span>
+                <span>{{ meta_semanal }} kcal</span>
+            </div>
+            <div class="info-linha">
+                <span>Atingido:</span>
+                <span>{{ calorias_atingidas }} kcal</span>
+            </div>
+            <div class="info-linha">
+                <span>Progresso:</span>
+                <span>{{ percentual|floatformat:1 }}%</span>
+            </div>
+        </div>
+
+        <div class="grafico">
+            {{ plot_div|safe }}
+        </div>
+
+        <a href="{% url 'plano_list' %}" class="btn-voltar">Voltar</a>
+    </main>
+
+    
+
+</body>
+</html>

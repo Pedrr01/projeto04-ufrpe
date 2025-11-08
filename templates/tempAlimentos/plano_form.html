@@ -20,6 +20,11 @@
         {{ form.descricao }}
     </p>
 
+    <p>
+        <label for="{{ form.calorias.id_for_label }}">Quantidade de Calorias:</label>
+        {{ form.calorias }}
+    </p>
+
     <button type="submit">Salvar Refeição</button>
     <a href="{% url 'plano_list' %}" style="text-decoration: none;">
         <button type="button" style="background-color: var(--border-color); color: var(--text-color); margin-left: 0.5em;">

@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from .models import PlanoAlimentar
 from .forms import PlanoAlimentarForm
 from django.shortcuts import get_object_or_404
+from .estatisticas import gerar_grafico
 
 @login_required
 def plano_list(request):
@@ -45,4 +46,21 @@ def plano_estatisticas(request):
     return render(request, 'tempAlimentos/plano_estatisticas.html', {
         'total_refeicoes': total_refeicoes,
         'total_concluidas': total_concluidas
+    })
+
+@login_required
+def plano_estatisticas(request):
+    planos = PlanoAlimentar.objects.filter(usuario=request.user)
+    total_refeicoes = planos.count()
+    total_concluidas = planos.filter(concluido=True).count()
+
+    plot_div, meta_semanal, calorias_atingidas, percentual = gerar_grafico(planos)
+
+    return render(request, 'tempAlimentos/plano_estatisticas.html', {
+        'total_refeicoes': total_refeicoes,
+        'total_concluidas': total_concluidas,
+        'plot_div': plot_div,
+        'meta_semanal': meta_semanal,
+        'calorias_atingidas': calorias_atingidas,
+        'percentual': percentual,
     })

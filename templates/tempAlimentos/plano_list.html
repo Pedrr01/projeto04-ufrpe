@@ -192,65 +192,73 @@
             </div>
 
             <table>
-                <thead>
-                    <tr>
-                        <th>Dia da Semana</th>
-                        <th>Café da Manhã</th>
-                        <th>Almoço</th>
-                        <th>Jantar</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for dia, refeicoes in estrutura.items %}
-                    <tr>
-                        <td style="font-weight: bold;">{{ dia|capfirst }}</td>
+            <thead>
+                <tr>
+                    <th>Dia da Semana</th>
+                    <th>Café da Manhã</th>
+                    <th>Almoço</th>
+                    <th>Jantar</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for dia, refeicoes in estrutura.items %}
+                <tr>
+                    <td style="font-weight: bold;">{{ dia|capfirst }}</td>
 
-                        <!-- Café -->
-                        <td class="checkbox-cell">
-                            {% if refeicoes.cafe %}
-                                <form method="post" action="{% url 'plano_toggle' refeicoes.cafe.id %}">
-                                    {% csrf_token %}
-                                    <input type="checkbox" name="concluido" onchange="this.form.submit()" 
-                                           {% if refeicoes.cafe.concluido %}checked{% endif %}>
-                                    <label>{{ refeicoes.cafe.descricao }}</label>
-                                </form>
-                            {% else %}
-                                <form><input type="checkbox" disabled> <label>-</label></form>
-                            {% endif %}
-                        </td>
+                    <!-- Café -->
+                    <td class="checkbox-cell">
+                        {% if refeicoes.cafe %}
+                            <form method="post" action="{% url 'plano_toggle' refeicoes.cafe.id %}">
+                                {% csrf_token %}
+                                <input type="checkbox" name="concluido" onchange="this.form.submit()"
+                                    {% if refeicoes.cafe.concluido %}checked{% endif %}>
+                                <label>{{ refeicoes.cafe.descricao }}</label>
+                            </form>
+                            <!-- Exibindo as calorias abaixo da refeição -->
+                            <p>{{ refeicoes.cafe.calorias }} calorias</p>
+                        {% else %}
+                            <form><input type="checkbox" disabled> <label>-</label></form>
+                            <p>-</p>
+                        {% endif %}
+                    </td>
 
-                        <!-- Almoço -->
-                        <td class="checkbox-cell">
-                            {% if refeicoes.almoco %}
-                                <form method="post" action="{% url 'plano_toggle' refeicoes.almoco.id %}">
-                                    {% csrf_token %}
-                                    <input type="checkbox" name="concluido" onchange="this.form.submit()" 
-                                           {% if refeicoes.almoco.concluido %}checked{% endif %}>
-                                    <label>{{ refeicoes.almoco.descricao }}</label>
-                                </form>
-                            {% else %}
-                                <form><input type="checkbox" disabled> <label>-</label></form>
-                            {% endif %}
-                        </td>
+                    <!-- Almoço -->
+                    <td class="checkbox-cell">
+                        {% if refeicoes.almoco %}
+                            <form method="post" action="{% url 'plano_toggle' refeicoes.almoco.id %}">
+                                {% csrf_token %}
+                                <input type="checkbox" name="concluido" onchange="this.form.submit()"
+                                    {% if refeicoes.almoco.concluido %}checked{% endif %}>
+                                <label>{{ refeicoes.almoco.descricao }}</label>
+                            </form>
+                            <!-- Exibindo as calorias abaixo da refeição -->
+                            <p>{{ refeicoes.almoco.calorias }} calorias</p>
+                        {% else %}
+                            <form><input type="checkbox" disabled> <label>-</label></form>
+                            <p>-</p>
+                        {% endif %}
+                    </td>
 
-                        <!-- Jantar -->
-                        <td class="checkbox-cell">
-                            {% if refeicoes.jantar %}
-                                <form method="post" action="{% url 'plano_toggle' refeicoes.jantar.id %}">
-                                    {% csrf_token %}
-                                    <input type="checkbox" name="concluido" onchange="this.form.submit()" 
-                                           {% if refeicoes.jantar.concluido %}checked{% endif %}>
-                                    <label>{{ refeicoes.jantar.descricao }}</label>
-                                </form>
-                            {% else %}
-                                <form><input type="checkbox" disabled> <label>-</label></form>
-                            {% endif %}
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
+                    <!-- Jantar -->
+                    <td class="checkbox-cell">
+                        {% if refeicoes.jantar %}
+                            <form method="post" action="{% url 'plano_toggle' refeicoes.jantar.id %}">
+                                {% csrf_token %}
+                                <input type="checkbox" name="concluido" onchange="this.form.submit()"
+                                    {% if refeicoes.jantar.concluido %}checked{% endif %}>
+                                <label>{{ refeicoes.jantar.descricao }}</label>
+                            </form>
+                            <!-- Exibindo as calorias abaixo da refeição -->
+                            <p>{{ refeicoes.jantar.calorias }} calorias</p>
+                        {% else %}
+                            <form><input type="checkbox" disabled> <label>-</label></form>
+                            <p>-</p>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
             </table>
-
             {% if not estrutura %}
                 <p class="empty">Nenhum plano alimentar cadastrado ainda.</p>
             {% endif %}
