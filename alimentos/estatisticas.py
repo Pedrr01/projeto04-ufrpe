@@ -2,35 +2,25 @@ import plotly.graph_objects as go
 from plotly.offline import plot
 
 def gerar_grafico(planos):
-    """
-    Gera o gráfico de estatísticas do plano alimentar com base nos planos do usuário.
-    Retorna o gráfico HTML e os dados numéricos para exibir na página.
-    """
+   
     dias = ['segunda', 'terca', 'quarta', 'quinta', 'sexta']
-    calorias_refeicao = {
-        "cafe": 300,
-        "almoco": 700,
-        "jantar": 500
-    }
 
-    # Calcular calorias diárias com base nas refeições concluídas
+
     calorias_diarias = []
     for dia in dias:
         planos_dia = planos.filter(dia_semana=dia, concluido=True)
-        total_dia = sum(calorias_refeicao.get(plano.tipo_refeicao, 0) for plano in planos_dia)
+        total_dia = sum(plano.calorias for plano in planos_dia)
         calorias_diarias.append(total_dia)
 
-    # Configurações de metas
     meta_diaria = 1500
     meta_semanal = meta_diaria * len(dias)
     calorias_atingidas = sum(calorias_diarias)
     percentual = (calorias_atingidas / meta_semanal * 100) if meta_semanal else 0
 
-    # Criação do gráfico
     fig = go.Figure()
 
     fig.add_trace(go.Scatter(
-        x=dias,
+        x=[dia.capitalize() for dia in dias],
         y=calorias_diarias,
         mode='lines+markers+text',
         line=dict(color="#27ae60", width=4, shape='spline'),
@@ -43,7 +33,7 @@ def gerar_grafico(planos):
         textfont=dict(size=14, color="#2d3436")
     ))
 
-    # Linha da meta
+
     fig.add_shape(
         type="line",
         x0=0, x1=1, xref="paper",
@@ -52,7 +42,7 @@ def gerar_grafico(planos):
     )
 
     fig.add_annotation(
-        text="Meta diária: 1500 kcal",
+        text=f"Meta diária: {meta_diaria} kcal",
         xref="paper",
         yref="y",
         x=0.98,
@@ -63,7 +53,7 @@ def gerar_grafico(planos):
         bgcolor="#ffffff"
     )
 
-    # Layout geral
+   
     fig.update_layout(
         title={
             'text': "Desempenho Semanal de Calorias 🥗",
@@ -88,5 +78,5 @@ def gerar_grafico(planos):
 
     plot_div = plot(fig, output_type='div', include_plotlyjs=True)
 
-    # Retorna tanto o gráfico quanto os dados
+  
     return plot_div, meta_semanal, calorias_atingidas, percentual
