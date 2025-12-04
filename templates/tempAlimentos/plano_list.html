@@ -9,12 +9,12 @@
 
     <style>
         :root {
-            --primary-color: #EF5350;
-            --primary-hover-color: #d32f2f;
-            --background-color: #f4f4f9;
+            --primary-color:  #FF5722;
+            --primary-hover-color: #E64A19;
+            --background-color: #E3E3E3;
             --card-background: #ffffff;
-            --text-color: #333;
-            --border-color: #ddd;
+            --text-color: #333333;
+            --border-color: #CFCFCF;
             --active-color: #45a049;
         }
 
@@ -30,7 +30,6 @@
             min-height: 100vh;
         }
 
-        /* Caixa do usuário */
         .user-status {
             position: fixed;
             top: 20px;
@@ -82,7 +81,6 @@
             color: white;
         }
 
-        /* Estilo do conteúdo principal */
         main.card {
             background-color: var(--card-background);
             padding: 2em;
@@ -96,7 +94,6 @@
             margin-top: 0;
         }
 
-        /* Estilo da tabela */
         table {
             width: 100%;
             border-collapse: collapse;
@@ -132,7 +129,6 @@
             transform: scale(1.2);
         }
 
-        /* Botões principais */
         .top-buttons {
             margin-bottom: 1.5em;
             text-align: center;
@@ -206,7 +202,6 @@
                 <tr>
                     <td style="font-weight: bold;">{{ dia|capfirst }}</td>
 
-                    <!-- Café -->
                     <td class="checkbox-cell">
                         {% if refeicoes.cafe %}
                             <form method="post" action="{% url 'plano_toggle' refeicoes.cafe.id %}">
@@ -215,7 +210,6 @@
                                     {% if refeicoes.cafe.concluido %}checked{% endif %}>
                                 <label>{{ refeicoes.cafe.descricao }}</label>
                             </form>
-                            <!-- Exibindo as calorias abaixo da refeição -->
                             <p>{{ refeicoes.cafe.calorias }} calorias</p>
                         {% else %}
                             <form><input type="checkbox" disabled> <label>-</label></form>
@@ -223,7 +217,6 @@
                         {% endif %}
                     </td>
 
-                    <!-- Almoço -->
                     <td class="checkbox-cell">
                         {% if refeicoes.almoco %}
                             <form method="post" action="{% url 'plano_toggle' refeicoes.almoco.id %}">
@@ -232,7 +225,6 @@
                                     {% if refeicoes.almoco.concluido %}checked{% endif %}>
                                 <label>{{ refeicoes.almoco.descricao }}</label>
                             </form>
-                            <!-- Exibindo as calorias abaixo da refeição -->
                             <p>{{ refeicoes.almoco.calorias }} calorias</p>
                         {% else %}
                             <form><input type="checkbox" disabled> <label>-</label></form>
@@ -240,7 +232,6 @@
                         {% endif %}
                     </td>
 
-                    <!-- Jantar -->
                     <td class="checkbox-cell">
                         {% if refeicoes.jantar %}
                             <form method="post" action="{% url 'plano_toggle' refeicoes.jantar.id %}">
@@ -249,7 +240,6 @@
                                     {% if refeicoes.jantar.concluido %}checked{% endif %}>
                                 <label>{{ refeicoes.jantar.descricao }}</label>
                             </form>
-                            <!-- Exibindo as calorias abaixo da refeição -->
                             <p>{{ refeicoes.jantar.calorias }} calorias</p>
                         {% else %}
                             <form><input type="checkbox" disabled> <label>-</label></form>
