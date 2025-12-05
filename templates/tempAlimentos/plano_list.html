@@ -97,7 +97,6 @@
         table {
             width: 100%;
             border-collapse: collapse;
-            font-size: 1em;
             background-color: #fff;
             box-shadow: 0 0 8px rgba(0, 0, 0, 0.05);
         }
@@ -112,17 +111,12 @@
             color: white;
             font-weight: bold;
         }
-        tbody tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-        tbody tr:nth-child(odd) {
-            background-color: #ffffff;
-        }
+
         .checkbox-cell form {
             display: flex;
+            flex-direction: column;
             align-items: center;
-            justify-content: center;
-            gap: 0.5em;
+            gap: 0.4em;
             margin: 0;
         }
         .checkbox-cell input[type="checkbox"] {
@@ -141,7 +135,6 @@
             border-radius: 4px;
             cursor: pointer;
             font-weight: 600;
-            transition: background-color 0.3s;
             margin: 0 0.5em;
         }
         .top-buttons button:hover {
@@ -157,103 +150,111 @@
     </style>
 </head>
 <body>
-    {% if user.is_authenticated %}
-    <div class="user-status">
-        <span class="status-dot"></span>
-        <span>Olá, {{ user.username }}!</span>
-    </div>
-    {% endif %}
 
-    <div class="main-container">
-        <nav>
-            <div>
-                <a href="{% url 'home' %}">Início</a>
-            </div>
-            <div>
-                {% if user.is_authenticated %}
-                    <a href="{% url 'logout' %}">Sair</a>
-                {% else %}
-                    <a href="{% url 'login' %}">Entrar</a>
-                    <a href="{% url 'signup' %}">Cadastrar</a>
-                {% endif %}
-            </div>
-        </nav>
+{% if user.is_authenticated %}
+<div class="user-status">
+    <span class="status-dot"></span>
+    <span>Olá, {{ user.username }}!</span>
+</div>
+{% endif %}
 
-        <main class="card">
-            <h2>Plano Alimentar da Semana</h2>
+<div class="main-container">
 
-            <div class="top-buttons">
-                <a href="{% url 'plano_download_pdf' %}"><button>Baixar Plano (PDF)</button></a>
-                <a href="{% url 'plano_create' %}"><button>Adicionar Refeição</button></a>
-                <a href="{% url 'plano_estatisticas' %}"><button>Estatísticas</button></a>
-            </div>
-
-            <table>
-            <thead>
-                <tr>
-                    <th>Dia da Semana</th>
-                    <th>Café da Manhã</th>
-                    <th>Almoço</th>
-                    <th>Jantar</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for dia, refeicoes in estrutura.items %}
-                <tr>
-                    <td style="font-weight: bold;">{{ dia|capfirst }}</td>
-
-                    <td class="checkbox-cell">
-                        {% if refeicoes.cafe %}
-                            <form method="post" action="{% url 'plano_toggle' refeicoes.cafe.id %}">
-                                {% csrf_token %}
-                                <input type="checkbox" name="concluido" onchange="this.form.submit()"
-                                    {% if refeicoes.cafe.concluido %}checked{% endif %}>
-                                <label>{{ refeicoes.cafe.descricao }}</label>
-                            </form>
-                            <p>{{ refeicoes.cafe.calorias }} calorias</p>
-                        {% else %}
-                            <form><input type="checkbox" disabled> <label>-</label></form>
-                            <p>-</p>
-                        {% endif %}
-                    </td>
-
-                    <td class="checkbox-cell">
-                        {% if refeicoes.almoco %}
-                            <form method="post" action="{% url 'plano_toggle' refeicoes.almoco.id %}">
-                                {% csrf_token %}
-                                <input type="checkbox" name="concluido" onchange="this.form.submit()"
-                                    {% if refeicoes.almoco.concluido %}checked{% endif %}>
-                                <label>{{ refeicoes.almoco.descricao }}</label>
-                            </form>
-                            <p>{{ refeicoes.almoco.calorias }} calorias</p>
-                        {% else %}
-                            <form><input type="checkbox" disabled> <label>-</label></form>
-                            <p>-</p>
-                        {% endif %}
-                    </td>
-
-                    <td class="checkbox-cell">
-                        {% if refeicoes.jantar %}
-                            <form method="post" action="{% url 'plano_toggle' refeicoes.jantar.id %}">
-                                {% csrf_token %}
-                                <input type="checkbox" name="concluido" onchange="this.form.submit()"
-                                    {% if refeicoes.jantar.concluido %}checked{% endif %}>
-                                <label>{{ refeicoes.jantar.descricao }}</label>
-                            </form>
-                            <p>{{ refeicoes.jantar.calorias }} calorias</p>
-                        {% else %}
-                            <form><input type="checkbox" disabled> <label>-</label></form>
-                            <p>-</p>
-                        {% endif %}
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-            </table>
-            {% if not estrutura %}
-                <p class="empty">Nenhum plano alimentar cadastrado ainda.</p>
+    <nav>
+        <div>
+            <a href="{% url 'home' %}">Início</a>
+        </div>
+        <div>
+            {% if user.is_authenticated %}
+                <a href="{% url 'logout' %}">Sair</a>
+            {% else %}
+                <a href="{% url 'login' %}">Entrar</a>
+                <a href="{% url 'signup' %}">Cadastrar</a>
             {% endif %}
-        </main>
-    </div>
+        </div>
+    </nav>
+
+    <main class="card">
+        <h2>Plano Alimentar da Semana</h2>
+
+        <div class="top-buttons">
+            <a href="{% url 'plano_download_pdf' %}"><button>Baixar Plano (PDF)</button></a>
+            <a href="{% url 'plano_create' %}"><button>Adicionar Refeição</button></a>
+            <a href="{% url 'plano_estatisticas' %}"><button>Estatísticas</button></a>
+        </div>
+
+        <table>
+        <thead>
+            <tr>
+                <th>Dia da Semana</th>
+                <th>Café da Manhã</th>
+                <th>Almoço</th>
+                <th>Jantar</th>
+            </tr>
+        </thead>
+        <tbody>
+
+        {% for dia, refeicoes in estrutura.items %}
+        <tr>
+            <td style="font-weight: bold;">{{ dia|capfirst }}</td>
+            <td class="checkbox-cell">
+                {% if refeicoes.cafe %}
+                <form method="post" action="{% url 'plano_toggle' refeicoes.cafe.id %}">
+                    {% csrf_token %}
+                    <input type="checkbox" name="concluido"
+                           onchange="this.form.submit()"
+                           {% if refeicoes.cafe.concluido %}checked{% endif %}>
+                    <span>{{ refeicoes.cafe.descricao }}</span>
+                    <small>{{ refeicoes.cafe.calorias }} calorias</small>
+                </form>
+                {% else %}
+                    <input type="checkbox" disabled>
+                    <small>-</small>
+                {% endif %}
+            </td>
+            <td class="checkbox-cell">
+                {% if refeicoes.almoco %}
+                <form method="post" action="{% url 'plano_toggle' refeicoes.almoco.id %}">
+                    {% csrf_token %}
+                    <input type="checkbox" name="concluido"
+                           onchange="this.form.submit()"
+                           {% if refeicoes.almoco.concluido %}checked{% endif %}>
+                    <span>{{ refeicoes.almoco.descricao }}</span>
+                    <small>{{ refeicoes.almoco.calorias }} calorias</small>
+                </form>
+                {% else %}
+                    <input type="checkbox" disabled>
+                    <small>-</small>
+                {% endif %}
+            </td>
+            <td class="checkbox-cell">
+                {% if refeicoes.jantar %}
+                <form method="post" action="{% url 'plano_toggle' refeicoes.jantar.id %}">
+                    {% csrf_token %}
+                    <input type="checkbox" name="concluido"
+                           onchange="this.form.submit()"
+                           {% if refeicoes.jantar.concluido %}checked{% endif %}>
+                    <span>{{ refeicoes.jantar.descricao }}</span>
+                    <small>{{ refeicoes.jantar.calorias }} calorias</small>
+                </form>
+                {% else %}
+                    <input type="checkbox" disabled>
+                    <small>-</small>
+                {% endif %}
+            </td>
+
+        </tr>
+        {% endfor %}
+
+        </tbody>
+        </table>
+
+        {% if not estrutura %}
+            <p class="empty">Nenhum plano alimentar cadastrado ainda.</p>
+        {% endif %}
+    </main>
+
+</div>
+
 </body>
 </html>

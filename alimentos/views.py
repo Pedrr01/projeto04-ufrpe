@@ -1,4 +1,3 @@
-# alimentos/views.py
 from io import BytesIO
 
 from django.shortcuts import render, redirect, get_object_or_404
@@ -43,14 +42,18 @@ def plano_create(request):
         form = PlanoAlimentarForm()
     return render(request, 'tempAlimentos/plano_form.html', {'form': form})
 
-
 @login_required
 def plano_toggle(request, pk):
     plano = get_object_or_404(PlanoAlimentar, pk=pk, usuario=request.user)
+
     if request.method == "POST":
-        plano.concluido = not plano.concluido
+        valor = request.POST.get("concluido", "off")
+
+        plano.concluido = valor in ["on", "true", "1", "concluido"]
+
         plano.save()
-    return redirect('plano_list')
+
+    return redirect("plano_list")
 
 
 @login_required
@@ -70,16 +73,8 @@ def plano_estatisticas(request):
         'percentual': percentual,
     })
 
-
-# ----------------------------
-# Funções para gerar PDFs
-# ----------------------------
-
 @login_required
 def plano_download_pdf(request):
-    """
-    Gera PDF com o plano alimentar da semana do usuário.
-    """
     planos = PlanoAlimentar.objects.filter(usuario=request.user).order_by('dia_semana', 'tipo_refeicao')
     dias = ['segunda', 'terca', 'quarta', 'quinta', 'sexta']
 
@@ -88,8 +83,8 @@ def plano_download_pdf(request):
     width, height = A4
     y = height - 2 * cm
 
-    # Cabeçalho
     p.setFont("Helvetica-Bold", 16)
+    p.setFillColor(colors.HexColor("#45a049"))
     p.drawString(2 * cm, y, f"Plano Alimentar - {request.user.username}")
     y -= 1 * cm
 
@@ -97,13 +92,11 @@ def plano_download_pdf(request):
     styleN = styles["BodyText"]
 
     for dia in dias:
-        # título do dia
         p.setFont("Helvetica-Bold", 14)
-        p.setFillColor(colors.HexColor("#EF5350"))
+        p.setFillColor(colors.HexColor("#FF5722"))
         p.drawString(2 * cm, y, f"{dia.capitalize()}")
         y -= 0.6 * cm
 
-        # construir tabela do dia
         data = [["Refeição", "Descrição", "Calorias", "Concluído"]]
         planos_dia = planos.filter(dia_semana=dia)
         for plano in planos_dia:
@@ -112,14 +105,13 @@ def plano_download_pdf(request):
                 plano.get_tipo_refeicao_display(),
                 descricao_par,
                 f"{plano.calorias} kcal",
-                "✅" if plano.concluido else "❌"
+                "✔" if plano.concluido else "✘"
             ])
 
         if len(data) > 1:
-            # desenhar tabela
             table = Table(data, colWidths=[3 * cm, 9 * cm, 3 * cm, 2 * cm])
             table.setStyle(TableStyle([
-                ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#EF5350")),
+                ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#FF5722")),
                 ('TEXTCOLOR', (0, 0), (-1, 0), colors.white),
                 ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
                 ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
@@ -129,7 +121,6 @@ def plano_download_pdf(request):
                 ('RIGHTPADDING', (1, 1), (1, -1), 6),
             ]))
             w, h = table.wrapOn(p, width - 4 * cm, y)
-            # se não couber na página, criar nova página
             if y - h < 2 * cm:
                 p.showPage()
                 y = height - 2 * cm
@@ -156,11 +147,6 @@ def plano_download_pdf(request):
 
 @login_required
 def plano_estatisticas_pdf(request):
-    """
-    Gera PDF com as estatísticas do plano.
-    Observação: por simplicidade este PDF inclui o resumo textual.
-    Podemos também inserir o gráfico (como imagem) se quiser.
-    """
     planos = PlanoAlimentar.objects.filter(usuario=request.user)
     total_refeicoes = planos.count()
     total_concluidas = planos.filter(concluido=True).count()
